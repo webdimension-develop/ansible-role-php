@@ -1,0 +1,50 @@
+---
+# - name: install php
+#  become: true
+#  dnf:
+#    name: "{{ item }}"
+#    state: latest
+#  with_items:
+#    - php:8.1
+
+- name: Check installed php
+  command: bash -lc "php -v"
+  register: php_exists
+  changed_when: false
+  ignore_errors: true
+
+- name: Install repo epel
+  become: true
+  dnf:
+    name: https://dl.fedoraproject.org/pub/epel/epel-release-latest-9.noarch.rpm
+    state: present
+    disable_gpg_check: true
+  when:
+    - php_exists is failed
+
+- name: Install repo remi
+  become: true
+  dnf:
+    name: https://rpms.remirepo.net/enterprise/remi-release-9.rpm
+    state: present
+    disable_gpg_check: true
+  when:
+    - php_exists is failed
+
+- name: Install php
+  become: true
+  command: "dnf module install -y php:remi-{{ php_version }}"
+  when:
+    - php_exists is failed
+  notify: Restart nginx
+
+# - name: create phpinfo
+#  become: true
+#  copy:
+#    src: phpinfo.php
+#    dest: /usr/share/nginx/html
+#    owner: nginx
+#    group: nginx
+#    mode: '0644'
+#  when:
+#    - php_exists is failed
