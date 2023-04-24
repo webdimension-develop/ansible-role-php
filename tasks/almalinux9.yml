@@ -36,7 +36,7 @@
   command: "dnf module install -y php:remi-{{ php_version }}"
   when:
     - php_exists is failed
-  notify: Restart nginx
+#  notify: Restart nginx
 
 # - name: create phpinfo
 #  become: true
