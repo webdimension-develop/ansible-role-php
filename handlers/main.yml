@@ -11,3 +11,9 @@
   service:
     name: httpd
     state: restarted
+
+- name: Restart php-fpm
+  become: true
+  service:
+    name: php-fpm
+    state: restarted

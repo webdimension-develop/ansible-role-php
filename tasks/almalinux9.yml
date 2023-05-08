@@ -59,3 +59,25 @@
 - name: move composer.phar
   become: true
   shell: mv /tmp/composer.phar /bin/composer
+
+- name: Php-fpm www.conf user
+  become: true
+  lineinfile:
+    dest: "/etc/php-fpm.d/www.conf"
+    regexp: "^user ="
+    insertafter: "user ="
+    line: "user = {{ php_fpm_www_user }}"
+  notify: Restart php-fpm
+  when:
+    - php_fpm_www_user == 'nginx'
+
+- name: Php-fpm www.conf group
+  become: true
+  lineinfile:
+    dest: "/etc/php-fpm.d/www.conf"
+    regexp: "^group ="
+    insertafter: "group ="
+    line: "group = {{ php_fpm_www_group }}"
+  notify: Restart php-fpm
+  when:
+    - php_fpm_www_group == 'nginx'
