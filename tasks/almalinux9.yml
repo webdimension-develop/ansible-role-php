@@ -21,6 +21,8 @@
     disable_gpg_check: true
   when:
     - php_exists is failed
+  async: 1000
+  poll: 1
 
 - name: Install repo remi
   become: true
@@ -30,6 +32,8 @@
     disable_gpg_check: true
   when:
     - php_exists is failed
+  async: 1000
+  poll: 1
 
 - name: Install php
   become: true
@@ -54,10 +58,14 @@
 - name: get composer
   become: true
   get_url: url=https://getcomposer.org/installer  dest=/tmp/composer-setup.php
+  async: 1000
+  poll: 1
 
 - name: install composer
   become: true
   shell: chdir=/tmp php composer-setup.php
+  async: 1000
+  poll: 1
 
 - name: move composer.phar
   become: true
